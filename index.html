@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Open App</title>
+    <script>
+        function openApp() {
+            // Lấy param từ URL
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get("id") ?? "";
+
+            // URL Scheme mở app
+            const appURL = "myapp://manga?id=" + id;
+
+            // Fallback App Store
+            const appStoreURL = "https://apps.apple.com/vn/app/manga-reader-king/id6739520174";
+
+            const clickedAt = Date.now();
+            window.location = appURL;
+
+            setTimeout(function () {
+                // Nếu Safari vẫn đang chạy → app chưa mở được
+                if (Date.now() - clickedAt < 1500) return;
+                window.location = appStoreURL;
+            }, 1500);
+        }
+    </script>
+</head>
+<body onload="openApp()">
+    <h3>Đang mở ứng dụng…</h3>
+</body>
+</html>
