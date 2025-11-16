@@ -4,25 +4,34 @@
     <meta charset="UTF-8">
     <title>Open App</title>
     <script>
+        let interacted = false;
+
+        document.addEventListener("click", () => interacted = true);
+        document.addEventListener("touchstart", () => interacted = true);
+
         function openApp() {
-            // Lấy param từ URL
             const params = new URLSearchParams(window.location.search);
             const id = params.get("id") ?? "";
 
-            // URL Scheme mở app
             const appURL = "mangaapp://manga?id=" + id;
-
-            // Fallback App Store
             const appStoreURL = "https://apps.apple.com/vn/app/manga-reader-king/id6739520174";
 
-            const clickedAt = Date.now();
-            window.location = appURL;
+            // Try opening via iframe first (avoid popup in some browsers)
+            const iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = appURL;
+            document.body.appendChild(iframe);
 
-            setTimeout(function () {
-                // Nếu Safari vẫn đang chạy → app chưa mở được
-                if (Date.now() - clickedAt < 1500) return;
-                window.location = appStoreURL;
-            }, 1500);
+            const start = Date.now();
+
+            // Fallback logic
+            setTimeout(() => {
+                if (interacted) return; // user bấm "Open"
+
+                if (Date.now() - start < 3500) {
+                    window.location = appStoreURL;
+                }
+            }, 3500);
         }
     </script>
 </head>
@@ -30,3 +39,4 @@
     <h3>Đang mở ứng dụng…</h3>
 </body>
 </html>
+
